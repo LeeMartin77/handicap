@@ -1,0 +1,9 @@
+version: 1
+packages:
+  - path: "./db"
+    name: "db"
+    engine: "postgresql"
+    schema: "./migrations"
+    queries: "./queries"
+    emit_interface: true
+    sql_package: pgx/v5

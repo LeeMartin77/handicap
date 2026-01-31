@@ -6,14 +6,17 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/leemartin77/handicap/internal/config"
+	"github.com/leemartin77/handicap/internal/storage/db"
 )
 
 type Storage interface {
 	GetTestData(ctx context.Context) string
+	GetQuerier() db.Querier
 }
 
 type postgresStorage struct {
-	pool *pgxpool.Pool
+	pool    *pgxpool.Pool
+	querier db.Querier
 }
 
 // GetTestData implements [Storage].
@@ -24,6 +27,11 @@ func (p *postgresStorage) GetTestData(ctx context.Context) string {
 		log.Fatal(err)
 	}
 	return res
+}
+
+// GetQuerier implements [Storage].
+func (p *postgresStorage) GetQuerier() db.Querier {
+	return p.querier
 }
 
 func NewStorage(ctx context.Context, cfg *config.Config) (Storage, error) {
@@ -37,7 +45,10 @@ func NewStorage(ctx context.Context, cfg *config.Config) (Storage, error) {
 		return nil, err
 	}
 
+	q := db.New(pl)
+
 	return &postgresStorage{
-		pool: pl,
+		pool:    pl,
+		querier: q,
 	}, nil
 }
