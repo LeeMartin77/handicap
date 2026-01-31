@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: handicap
+  name: handicap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: handicap
+  template:
+    metadata:
+      labels:
+        app: handicap
+      namespace: handicap
+      name: handicap
+    spec:
+      containers:
+        - name: handicap
+          image: ghcr.io/leemartin77/handicap:v0.0.1
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: POSTGRES_URL
+              value: postgres://username:password@localhost:5432/handicap
