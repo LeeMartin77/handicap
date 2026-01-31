@@ -1,0 +1,39 @@
+package server
+
+import (
+	"context"
+
+	"github.com/gin-gonic/gin"
+	"github.com/leemartin77/handicap/internal/config"
+	"github.com/leemartin77/handicap/internal/storage"
+)
+
+type Server interface {
+	RunServer() error
+}
+
+type serverState struct {
+	strg storage.Storage
+}
+
+func NewServer(ctx context.Context, cfg *config.Config) (Server, error) {
+	strg, err := storage.NewStorage(ctx, cfg)
+	if err != nil {
+		return nil, err
+	}
+	return &serverState{
+		strg: strg,
+	}, nil
+}
+
+// RunServer implements [Server].
+func (s *serverState) RunServer() error {
+	// TODO: make setup part of initialisation
+	router := gin.Default()
+	router.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": s.strg.GetTestData(c),
+		})
+	})
+	return router.Run()
+}
