@@ -10,4 +10,4 @@ FROM alpine AS run
 
 WORKDIR /app
 COPY --from=build /build/server /app/server
-RUN /app/server
+ENTRYPOINT [ "/app/server" ] 
