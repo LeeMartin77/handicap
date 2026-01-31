@@ -10,4 +10,6 @@ FROM alpine AS run
 
 WORKDIR /app
 COPY --from=build /build/server /app/server
+RUN mkdir web
+COPY ./web web
 ENTRYPOINT [ "/app/server" ] 
