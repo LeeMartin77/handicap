@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"log"
 	"strings"
 	"unicode"
 
@@ -36,12 +37,14 @@ func runMigrations(ctx context.Context, cfg *config.Config, pool *pgxpool.Pool) 
 			return fmt.Errorf("critical error - migration without 4 digit key (%s)", mgkey)
 		}
 
-		rw := pool.QueryRow(ctx, "SELECT * FROM migrations WHERE version_number = $1", key)
-		rwer := rw.Scan()
+		rw := pool.QueryRow(ctx, "SELECT 1 FROM migrations WHERE version_number = $1", key)
+		var i int
+		rwer := rw.Scan(&i)
 		if rwer != nil && rwer != pgx.ErrNoRows {
 			return rwer
 		}
 		if rwer != pgx.ErrNoRows {
+			log.Printf("migration %s already recorded - skipping\n", mg.Name())
 			continue
 		}
 		fl, err := migrations.ReadFile("migrations/" + mg.Name())
@@ -68,6 +71,7 @@ func runMigrations(ctx context.Context, cfg *config.Config, pool *pgxpool.Pool) 
 		if err != nil {
 			return err
 		}
+		log.Printf("migration %s successful\n", mg.Name())
 	}
 	return nil
 }
