@@ -31,6 +31,7 @@ func NewServer(ctx context.Context, cfg *config.Config) (Server, error) {
 func (s *serverState) RunServer() error {
 	// TODO: make setup part of initialisation
 	router := gin.Default()
+	router.Static("static", "web/static")
 	router.LoadHTMLGlob("web/template/*")
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
