@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,7 @@ type serverState struct {
 func NewServer(ctx context.Context, cfg *config.Config) (Server, error) {
 	strg, err := storage.NewStorage(ctx, cfg)
 	if err != nil {
+		log.Println("error  setting up storage")
 		return nil, err
 	}
 	return &serverState{

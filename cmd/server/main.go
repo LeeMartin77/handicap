@@ -16,13 +16,16 @@ func main() {
 	cfg := config.Config{}
 
 	if err := envconfig.Process(ctx, &cfg); err != nil {
+		log.Println("error with config")
 		log.Fatal(err)
 	}
 	srv, err := server.NewServer(ctx, &cfg)
 	if err != nil {
+		log.Println("error with setting up server")
 		log.Fatal(err)
 	}
 	if err := srv.RunServer(); err != nil {
+		log.Println("error with running server")
 		log.Fatal(err)
 	}
 	log.Println("server shut down")

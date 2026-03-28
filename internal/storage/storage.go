@@ -37,11 +37,15 @@ func (p *postgresStorage) GetQuerier() db.Querier {
 func NewStorage(ctx context.Context, cfg *config.Config) (Storage, error) {
 	pl, err := pgxpool.New(ctx, cfg.PostgresUrl)
 	if err != nil {
+
+		log.Println("error setting up storage pool")
 		return nil, err
 	}
 
 	err = runMigrations(ctx, cfg, pl)
 	if err != nil {
+
+		log.Println("error running migrations")
 		return nil, err
 	}
 
