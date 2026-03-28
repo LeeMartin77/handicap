@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: handicap
-          image: ghcr.io/leemartin77/handicap:v0.0.1
+          image: ghcr.io/leemartin77/handicap:v0.0.2
           imagePullPolicy: IfNotPresent
           resources:
             limits:
